@@ -1,0 +1,64 @@
+---
+
+title       : ARIMA Seasonality Demonstrator
+subtitle    : Developing Data Products Project
+author      : Bob Waters
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]     # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+
+---
+ 
+## Shiny App to Demonstrate Seasonality on ARIMA Models
+- ARIMA Autoregressive Integrated Moving Average
+- Describe Time Series Data and Forecast Future Values
+Seasonal ARIMA Model
+$$(p,d,q)\times(P,D,Q)_s$$
+- $p$: Autoregressive process order
+- $d$: Differencing term
+- $q$: Moving average process order
+
+- $P$: Seasonal autoregressive order
+- $D$: Seasonal differencing
+- $Q$: Seasonal moving average order
+- $s$: Seasonality
+
+--- .class #id 
+## Mauna Loa Atmospheric CO2 Concentration
+- Monthly Data, seasonality = 12
+- In base R as co2
+- Last 120 entries of the time series
+
+```{r,echo=FALSE,fig.width=10, fig.height=6}
+plot(ts(co2[348:468]))
+```
+
+
+--- .class #id 
+
+## auto.arima() Function
+- The R forecast package by R.Hyndman
+- Specify the seasonality
+- auto.arima varies the orders of the function, and calculates models
+- Model with the lowest AIC is chosen as the best of the models calculated
+```{r,echo=FALSE}
+x<-ts(co2[348:468],frequency = 12)
+fit<-auto.arima(x)
+fit
+```
+
+--- .class #id
+## Residual Autocorrelation and Partial Autocorrelation
+- Used to determine the resulting noise is independent and identically distributed
+- The noise within the 95% CI is most likely to be iid
+
+```{r,echo=FALSE,fig.width=10, fig.height=5 }
+x<-ts(co2[348:468],frequency = 12)
+fit<-auto.arima(x)
+plot(acf(fit$residuals))
+```
+- User can adjust seasonality and determine (or demonstrate) the seasonality is 12
